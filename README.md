@@ -15,10 +15,40 @@ The LLM is the librarian. You're the curator.
 
 ## Quick Start
 
-- **Open in Obsidian** — launch Obsidian, choose "Open folder as vault", select your vault folder
-- **Clip your first article** to `raw/`, then run `/ingest` — the LLM will discuss key takeaways and build wiki pages
-- **Browse your wiki** in Obsidian — follow `[[wikilinks]]`, explore the graph view, check `wiki/index.md`
-- **Keep going** — `/query` to ask questions, `/lint` to health-check
+1. **Open in Obsidian** — launch Obsidian, choose "Open folder as vault", select your vault folder
+2. **Pull GitLab comments** into `raw/` (see [Pulling from GitLab](#pulling-from-gitlab) below)
+3. **Run the skill** — agent follows its steps automatically
+
+| Step | Slash command | What it does |
+|---|---|---|
+| Ingest a source | `/ingest` | Reads `raw/`, writes wiki pages, updates index |
+| Ask a question | `/query` | Searches wiki, answers from structured pages |
+| Health-check | `/lint` | Finds broken links, orphan pages, stale claims |
+
+**Browse results** in Obsidian — follow `[[wikilinks]]`, explore graph view, check `wiki/index.md`
+
+## Pulling from GitLab
+
+`tools/gitlab.py` fetches merged MR comments from GitLab and writes export files to `raw/`.
+
+**1. Configure `.env`** in the `tools/` folder:
+
+```env
+GITLAB_URL=https://gitlab.example.com
+GITLAB_TOKEN=your_personal_access_token
+GITLAB_PROJECT_ID=123
+```
+
+**2. Run:**
+
+```sh
+cd tools
+uv run gitlab.py
+```
+
+Prompts for how many MRs to fetch — press Enter for all, or type a number (e.g. `50` for the 50 most recent merged MRs).
+
+Output: one or more JSON files in `raw/`, named by date range. Run `/ingest` after to process them into wiki pages.
 
 ## What You Get
 
