@@ -1,0 +1,16 @@
+from pathlib import Path
+
+
+def get_language_type(path: str) -> str:
+    """Return language name for a file path string."""
+    if not path:
+        return "unknown"
+    ext_map = {
+        ".ts": "typescript",
+        ".tsx": "typescript",
+        ".cs": "csharp",
+        ".html": "HTML",
+        ".sql": "SQL",
+    }
+    ext = Path(path).suffix.lower()
+    return ext_map.get(ext, "unknown")
