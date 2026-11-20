@@ -1,4 +1,4 @@
-# RainBird Wiki
+# LLM Wiki
 
 A personal knowledge base maintained by Claude Code.
 Based on [Andrej Karpathy's LLM Wiki pattern](llm-wiki.md).
