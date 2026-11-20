@@ -44,7 +44,3 @@ The wizard offers to install these. All optional but recommended:
 - **[markitdown](https://github.com/microsoft/markitdown)** — convert non-markdown files to markdown before ingestion
 - **[summarize](https://github.com/steipete/summarize)** — summarize links, files, and media from the CLI
 - **[qmd](https://github.com/tobi/qmd)** — local search engine for markdown files (useful as wiki grows)
-
-## Based On
-
-- [Andrej Karpathy's LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
