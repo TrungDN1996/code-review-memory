@@ -10,6 +10,7 @@ def get_language_type(path: str) -> str:
         ".tsx": "typescript",
         ".cs": "csharp",
         ".html": "HTML",
+        ".aspx": "HTML",
         ".sql": "SQL",
     }
     ext = Path(path).suffix.lower()
