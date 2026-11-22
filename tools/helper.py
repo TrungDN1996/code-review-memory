@@ -8,9 +8,11 @@ def get_language_type(path: str) -> str:
     ext_map = {
         ".ts": "typescript",
         ".tsx": "typescript",
+        ".js": "javascript",
         ".cs": "csharp",
+        ".aspx": "csharp",
         ".html": "HTML",
-        ".aspx": "HTML",
+        ".ascx": "HTML",
         ".sql": "SQL",
     }
     ext = Path(path).suffix.lower()
