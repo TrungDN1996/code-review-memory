@@ -14,11 +14,15 @@ class ExportFileHandler:
         oldest_date: str,
         latest_date: str,
         page: int | None = None,
+        filename: str | None = None,
     ) -> Path:
-        """Write export JSON. Adds _p{page} suffix when page is given."""
-        suffix = f"_p{page}" if page is not None else ""
-        filename = f"paul_comments_{oldest_date}_{latest_date}{suffix}.json"
-        output_file = self.output_dir / filename
+        """Write export JSON. Adds _p{page} suffix when page is given. filename overrides default stem."""
+        if filename:
+            resolved = f"{filename}.json"
+        else:
+            suffix = f"_p{page}" if page is not None else ""
+            resolved = f"pr_comments_{oldest_date}_{latest_date}{suffix}.json"
+        output_file = self.output_dir / resolved
         with output_file.open("w", encoding="utf-8") as f:
             json.dump(output, f, indent=2, ensure_ascii=False)
         return output_file

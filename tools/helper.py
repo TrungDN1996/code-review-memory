@@ -14,3 +14,6 @@ def get_language_type(path: str) -> str:
     }
     ext = Path(path).suffix.lower()
     return ext_map.get(ext, "unknown")
+
+def strip_ref(ref: str, prefix: str) -> str:
+    return ref.removeprefix(prefix) if ref else ref

@@ -15,11 +15,15 @@ Based on [Andrej Karpathy's LLM Wiki pattern](llm-wiki.md).
 │   ├── entities/           # People, orgs, tools, frameworks
 │   ├── concepts/           # Ideas, patterns, techniques
 │   │   ├── standards/      # Language-specific and general coding rules
-│   │   │   ├── csharp/     # C# rules: naming, null-handling, exception-handling, DI
+│   │   │   ├── backend/    # Backend rules: API design, error-handling, DI, patterns
 │   │   │   │
-│   │   │   ├── typescript/ # TypeScript rules: naming, null-handling, exception-handling
+│   │   │   ├── ui/         # UI rules: components, accessibility, styling
 │   │   │   │
-│   │   │   └── general/    # Cross-language rules: coding-patterns, clean-code, performance, code-document
+│   │   │   ├── unit-test/  # Unit test rules: structure, mocking, assertions
+│   │   │   │
+│   │   │   ├── sql/        # SQL rules: queries, schema design, performance
+│   │   │   │
+│   │   │   └── general/    # Cross-cutting rules: clean-code, naming, code-document
 │   │   │
 │   │   ├── knowledge-sharing/ # Domain models, processes, institutional knowledge
 │   │

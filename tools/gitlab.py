@@ -17,6 +17,7 @@ class GitLabCommentExporter:
         self.base_url = os.getenv("GITLAB_URL", "").rstrip("/")
         self.token = os.getenv("GITLAB_TOKEN")
         self.project_id = os.getenv("GITLAB_PROJECT_ID")
+        self.allowed_users = {u.strip() for u in os.getenv("GITLAB_ALLOWED_USERS", "").split(",") if u.strip()}
 
         if not all([self.base_url, self.token, self.project_id]):
             raise ValueError("Missing GitLab configuration in .env")
@@ -87,7 +88,6 @@ class GitLabCommentExporter:
 
     def _process_page(self, mrs_raw: list, tracked_mr_iids: set) -> tuple[list, int]:
         """Filter MRs, fetch and normalize comments. Returns (exported_mrs, total_comments)."""
-        allowed_users = {"ptobey"}
         merge_requests = [
             mr for mr in mrs_raw
             if mr.get("iid") not in tracked_mr_iids and bool(mr.get("merged_at"))
@@ -110,7 +110,7 @@ class GitLabCommentExporter:
             filtered_notes = [
                 note for note in all_notes
                 if not note.get("system", True)
-                and note.get("author", {}).get("username") in allowed_users
+                and note.get("author", {}).get("username") in self.allowed_users
             ]
 
             filtered_comments = [self.normalize_comment(note) for note in filtered_notes]
@@ -131,7 +131,40 @@ class GitLabCommentExporter:
 
         return exported_mrs, total_comments
 
-    def export(self, per_page: int | None = None):
+    def export_single(self, mr_iid: int):
+        """Fetch all comments for one MR (no user filter) and export."""
+        print(f"\nFetching comments for MR !{mr_iid}...")
+        discussions = self.get_mr_comments(mr_iid)
+
+        all_notes = [
+            note
+            for discussion in discussions
+            for note in discussion.get("notes", [])
+            if not note.get("system", True)
+        ]
+        comments = [self.normalize_comment(note) for note in all_notes]
+
+        if not comments:
+            print("\nNo comments found.")
+            return
+
+        output = {
+            "metadata": {
+                "gitlab_url": self.base_url,
+                "project_id": self.project_id,
+                "total_comments": len(comments),
+                "exported_at": datetime.now(timezone.utc).isoformat(),
+            },
+            "merge_requests": [{"iid": mr_iid, "comments": comments}],
+        }
+
+        output_file = self.file_handler.save_export(
+            output, "", "", filename=f"pr_comments_{mr_iid}"
+        )
+        print("\nExport completed!")
+        print(f"  {output_file}")
+
+    def export_multiple(self, per_page: int | None = None):
         """Fetch MRs page by page, write one export file per page when multi-page, one file otherwise."""
         print("\nRetrieving merge requests...")
 
@@ -189,13 +222,18 @@ def main():
     print("=" * 50)
 
     exporter = GitLabCommentExporter()
-    latest_at = exporter.history.get("latest_tracked_at")
 
-    prompt = f"\nMR amount to fetch (leave empty for all, last tracked: {latest_at}): "
-    raw = input(prompt).strip()
-    per_page = int(raw) if raw else None
+    mode = input("\nFetch (1) single MR or (2) multiple MRs? [1/2]: ").strip()
 
-    exporter.export(per_page=per_page)
+    if mode == "1":
+        raw_id = input("Enter MR IID: ").strip()
+        exporter.export_single(int(raw_id))
+    else:
+        latest_at = exporter.history.get("latest_tracked_at")
+        prompt = f"\nLatest MR amount to fetch (leave empty for all, last tracked: {latest_at}): "
+        raw = input(prompt).strip()
+        per_page = int(raw) if raw else None
+        exporter.export_multiple(per_page=per_page)
 
 
 if __name__ == "__main__":

@@ -119,15 +119,20 @@ For each entity (person, organization, product, tool) and concept (idea, framewo
 ```
 wiki/concepts/
 ├── standards/
-│   ├── csharp/          — C# language-specific rules (naming, null-handling, exception-handling, DI)
-│   ├── typescript/      — TypeScript-specific rules (naming, null-handling, exception-handling)
-│   └── general/         — language-agnostic rules (coding-patterns, clean-code, performance, code-document)
+│   ├── backend/         — backend rules (API design, error-handling, DI, patterns)
+│   ├── ui/              — UI rules (components, accessibility, styling)
+│   ├── unit-test/       — unit test rules (structure, mocking, assertions)
+│   ├── sql/             — SQL rules (queries, schema design, performance)
+│   └── general/         — cross-cutting rules (clean-code, naming, code-document)
 └── knowledge-sharing/   — domain models, processes, and institutional knowledge
 ```
 
 When creating a concept page, pick the most specific slot:
-- Language rule → `standards/csharp/` or `standards/typescript/`
-- Cross-language rule → `standards/general/`
+- Backend rule → `standards/backend/`
+- UI rule → `standards/ui/`
+- Unit test rule → `standards/unit-test/`
+- SQL rule → `standards/sql/`
+- Cross-cutting rule → `standards/general/`
 - Domain/process knowledge → `knowledge-sharing/`
 - Each page's metadata has the specific tags
 
