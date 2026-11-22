@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
-# Test: onboarding.sh creates correct vault structure
-# Usage: bash tests/test_onboarding.sh
+# Test: setup.sh creates correct vault structure
+# Usage: bash evals/setup_test.sh
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
-ONBOARDING="$REPO_ROOT/scripts/onboarding.sh"
+ONBOARDING="$REPO_ROOT/scripts/setup.sh"
 TEST_DIR=$(mktemp -d)
 TEST_VAULT="$TEST_DIR/test-vault"
 
@@ -48,7 +48,7 @@ assert_contains() {
   fi
 }
 
-echo "=== Test: onboarding.sh ==="
+echo "=== Test: setup.sh ==="
 echo ""
 
 # Test 1: Script runs successfully on a new directory
@@ -56,7 +56,6 @@ echo "Test 1: Fresh vault scaffolding"
 bash "$ONBOARDING" "$TEST_VAULT" 2>/dev/null
 
 assert_dir "$TEST_VAULT/raw"
-assert_dir "$TEST_VAULT/raw/assets"
 assert_dir "$TEST_VAULT/wiki"
 assert_dir "$TEST_VAULT/wiki/sources"
 assert_dir "$TEST_VAULT/wiki/entities"

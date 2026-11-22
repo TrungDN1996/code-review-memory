@@ -1,19 +1,19 @@
 #!/bin/bash
 set -e
 
-# Second Brain — Onboarding Script
+# Code Review Memory — Setup Script
 # Scaffolds vault directory structure and verifies CLI tooling.
 #
-# Usage: bash onboarding.sh <vault-path>
+# Usage: bash setup.sh <vault-path>
 # Output: JSON summary to stdout. Progress messages to stderr.
 
 VAULT_ROOT="${1:-.}"
 
-echo "=== LLM Wiki Onboarding ===" >&2
+echo "=== LLM Wiki Setup ===" >&2
 
 # 1. Create directory structure
 echo "Creating directory structure..." >&2
-mkdir -p "$VAULT_ROOT/raw/assets"
+mkdir -p "$VAULT_ROOT/raw"
 mkdir -p "$VAULT_ROOT/wiki/sources"
 mkdir -p "$VAULT_ROOT/wiki/entities"
 mkdir -p "$VAULT_ROOT/wiki/concepts"
@@ -80,11 +80,10 @@ print(json.dumps(tools))
 " 2>/dev/null || echo "$TOOLS_JSON")
 }
 
-check_tool "summarize" "summarize" "npm i -g @steipete/summarize"
 check_tool "qmd" "qmd" "npm i -g @tobilu/qmd"
 
 echo "" >&2
-echo "Onboarding complete." >&2
+echo "Setup complete." >&2
 
 # 5. Output JSON result to stdout
 VAULT_ABS=$(cd "$VAULT_ROOT" && pwd)
@@ -94,7 +93,6 @@ cat << JSONEOF
   "vault_root": "$VAULT_ABS",
   "directories": [
     "raw/",
-    "raw/assets/",
     "wiki/",
     "wiki/sources/",
     "wiki/entities/",
