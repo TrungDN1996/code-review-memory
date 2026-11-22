@@ -11,12 +11,12 @@ The LLM is the librarian. You're the curator.
 ## Prerequisites
 
 - **[Obsidian](https://obsidian.md)** — the markdown editor you'll browse your wiki in
-- **An AI coding agent** — [Claude Code](https://claude.ai/code), [Codex](https://openai.com/codex)
+- **An AI coding agent** — [Claude Code](https://claude.ai/code)
 
 ## Quick Start
 
 1. **Open in Obsidian** — launch Obsidian, choose "Open folder as vault", select your vault folder
-2. **Pull GitLab comments** into `raw/` (see [Pulling from GitLab](#pulling-from-gitlab) below)
+2. **Pull comments** into `raw/` — see [Pulling Comments](#pulling-comments) below
 3. **Run the skill** — agent follows its steps automatically
 
 | Step | Slash command | What it does |
@@ -27,28 +27,53 @@ The LLM is the librarian. You're the curator.
 
 **Browse results** in Obsidian — follow `[[wikilinks]]`, explore graph view, check `wiki/index.md`
 
-## Pulling from GitLab
+## Pulling Comments
 
-`tools/gitlab.py` fetches merged MR comments from GitLab and writes export files to `raw/`.
+Both exporters write JSON files to `raw/`. Run `/ingest` after either to process them into wiki pages.
 
-**1. Configure `.env`** in the `tools/` folder:
+Prompts for single PR (enter a PR ID) or multiple PRs (enter a count or press Enter for all).
+
+### GitLab
+
+`tools/gitlab.py` fetches merged MR comments.
+
+**`.env`** in `tools/`:
 
 ```env
 GITLAB_URL=https://gitlab.example.com
 GITLAB_TOKEN=your_personal_access_token
 GITLAB_PROJECT_ID=123
+GITLAB_ALLOWED_USERS=user1,user2
 ```
 
-**2. Run:**
+`GITLAB_ALLOWED_USERS` filters to specific reviewers (skipped for single-PR exports).
 
 ```sh
 cd tools
 uv run gitlab.py
 ```
 
-Prompts for how many MRs to fetch — press Enter for all, or type a number (e.g. `50` for the 50 most recent merged MRs).
+### Azure DevOps
 
-Output: one or more JSON files in `raw/`, named by date range. Run `/ingest` after to process them into wiki pages.
+`tools/azure.py` fetches completed PR comments.
+
+**`.env`** in `tools/`:
+
+```env
+AZURE_URL=https://dev.azure.com
+AZURE_ORG=your_organization
+AZURE_PROJECT=your_project
+AZURE_REPO_ID=your_repo_id_or_name
+AZURE_TOKEN=your_personal_access_token
+AZURE_ALLOWED_USERS=user1@example.com,user2@example.com
+```
+
+`AZURE_ALLOWED_USERS` filters to specific reviewers (skipped for single-PR exports).
+
+```sh
+cd tools
+uv run azure.py
+```
 
 ## What You Get
 
