@@ -15,9 +15,13 @@ The LLM is the librarian. You're the curator.
 
 ## Quick Start
 
-1. **Open in Obsidian** — launch Obsidian, choose "Open folder as vault", select your vault folder
-2. **Pull comments** into `raw/` — see [Pulling Comments](#pulling-comments) below
-3. **Run the skill** — agent follows its steps automatically
+1. **Create folder structure** — run setup script to scaffold the wiki directories:
+   ```sh
+   bash scripts/setup.sh
+   ```
+2. **Open in Obsidian** — launch Obsidian, choose "Open folder as vault", select your vault folder
+3. **Pull comments** into `raw/` — see [Pulling Comments](#pulling-comments) below
+4. **Run the skill** — agent follows its steps automatically
 
 | Step | Slash command | What it does |
 |---|---|---|
