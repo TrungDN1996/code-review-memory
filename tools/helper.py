@@ -11,6 +11,7 @@ def get_language_type(path: str) -> str:
         ".js": "javascript",
         ".cs": "csharp",
         ".aspx": "csharp",
+        ".csproj": "csharp",
         ".html": "HTML",
         ".ascx": "HTML",
         ".sql": "SQL",

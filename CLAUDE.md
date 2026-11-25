@@ -21,6 +21,8 @@ Based on [Andrej Karpathy's LLM Wiki pattern](llm-wiki.md).
 │   │   │   │
 │   │   │   ├── unit-test/  # Unit test rules: structure, mocking, assertions
 │   │   │   │
+│   │   │   ├── spec-test/  # Spec/integration test rules: BDD, e2e, contract testing
+│   │   │   │
 │   │   │   ├── sql/        # SQL rules: queries, schema design, performance
 │   │   │   │
 │   │   │   └── general/    # Cross-cutting rules: clean-code, naming, code-document

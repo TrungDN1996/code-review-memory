@@ -122,6 +122,7 @@ wiki/concepts/
 │   ├── backend/         — backend rules (API design, error-handling, DI, patterns)
 │   ├── ui/              — UI rules (components, accessibility, styling)
 │   ├── unit-test/       — unit test rules (structure, mocking, assertions)
+│   ├── spec-test/       — spec/integration test rules (BDD, e2e, contract testing)
 │   ├── sql/             — SQL rules (queries, schema design, performance)
 │   └── general/         — cross-cutting rules (clean-code, naming, code-document)
 └── knowledge-sharing/   — domain models, processes, and institutional knowledge
@@ -131,6 +132,7 @@ When creating a concept page, pick the most specific slot:
 - Backend rule → `standards/backend/`
 - UI rule → `standards/ui/`
 - Unit test rule → `standards/unit-test/`
+- Spec/integration/e2e/BDD test rule → `standards/spec-test/`
 - SQL rule → `standards/sql/`
 - Cross-cutting rule → `standards/general/`
 - Domain/process knowledge → `knowledge-sharing/`
