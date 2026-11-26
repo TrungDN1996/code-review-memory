@@ -118,25 +118,32 @@ For each entity (person, organization, product, tool) and concept (idea, framewo
 **Structure of wiki/concepts/:**
 ```
 wiki/concepts/
-├── standards/
-│   ├── backend/         — backend rules (API design, error-handling, DI, patterns)
-│   ├── ui/              — UI rules (components, accessibility, styling)
-│   ├── unit-test/       — unit test rules (structure, mocking, assertions)
-│   ├── spec-test/       — spec/integration test rules (BDD, e2e, contract testing)
-│   ├── sql/             — SQL rules (queries, schema design, performance)
-│   └── general/         — cross-cutting rules (clean-code, naming, code-document)
-└── knowledge-sharing/   — domain models, processes, and institutional knowledge
+├── standards/              — rules on code
+│   ├── csharp/             — C#-only rules (style, class layout, DI)
+│   ├── typescript/         — TypeScript-only rules (style, null handling, state)
+│   ├── sql/                — SQL rules (queries, schema design, performance)
+│   ├── ui/                 — user-facing behavior, any language (components, accessibility, interaction, strings)
+│   ├── testing/
+│   │   ├── unit/           — unit test rules (structure, mocking, assertions)
+│   │   └── spec/           — spec/integration test rules (BDD, e2e, contract testing)
+│   └── cross-cutting/      — language-independent code rules (clean-code, naming, docs, imports)
+├── practices/              — rules on how work happens (process, coordination, workflow)
+├── knowledge-sharing/      — domain and product facts, no rules
+└── others/                 — nothing above fits
 ```
 
-When creating a concept page, pick the most specific slot:
-- Backend rule → `standards/backend/`
-- UI rule → `standards/ui/`
-- Unit test rule → `standards/unit-test/`
-- Spec/integration/e2e/BDD test rule → `standards/spec-test/`
-- SQL rule → `standards/sql/`
-- Cross-cutting rule → `standards/general/`
-- Domain/process knowledge → `knowledge-sharing/`
-- Each page's metadata has the specific tags
+**Placement rule — one axis per level. The directory is what the rule constrains.**
+
+When creating a concept page, apply in order:
+- Constrains how work happens, not code → `practices/`
+- Fact about the product or domain, not a rule → `knowledge-sharing/`
+- Rule holds in one language only → `standards/<language>/` (`csharp/`, `typescript/`, `sql/`)
+- Rule is about user-facing behavior, any language → `standards/ui/`
+- Rule is about tests → `standards/testing/unit/` or `standards/testing/spec/`
+- Rule is language-independent → `standards/cross-cutting/`
+- Nothing fits → `others/`
+
+Do not create a directory before its first page exists. Do not tag a page with its own path segment (no `standards` tag inside `standards/`); tags carry topic only.
 
 ### 5. Add wikilinks
 

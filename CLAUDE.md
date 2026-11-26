@@ -13,22 +13,17 @@ Based on [Andrej Karpathy's LLM Wiki pattern](llm-wiki.md).
 │   ├── log.md              # Append-only operation log. Entries: ## [YYYY-MM-DD] type | Title
 │   ├── sources/            # One page per ingested source
 │   ├── entities/           # People, orgs, tools, frameworks
-│   ├── concepts/           # Ideas, patterns, techniques
-│   │   ├── standards/      # Language-specific and general coding rules
-│   │   │   ├── backend/    # Backend rules: API design, error-handling, DI, patterns
-│   │   │   │
-│   │   │   ├── ui/         # UI rules: components, accessibility, styling
-│   │   │   │
-│   │   │   ├── unit-test/  # Unit test rules: structure, mocking, assertions
-│   │   │   │
-│   │   │   ├── spec-test/  # Spec/integration test rules: BDD, e2e, contract testing
-│   │   │   │
-│   │   │   ├── sql/        # SQL rules: queries, schema design, performance
-│   │   │   │
-│   │   │   └── general/    # Cross-cutting rules: clean-code, naming, code-document
-│   │   │
-│   │   ├── knowledge-sharing/ # Domain models, processes, institutional knowledge
-│   │
+│   ├── concepts/           # Ideas, patterns, techniques. One axis per level — the directory is what the rule constrains
+│   │   ├── standards/      # Rules on code
+│   │   │   ├── csharp/     # C#-only rules
+│   │   │   ├── typescript/ # TypeScript-only rules
+│   │   │   ├── sql/        # SQL rules
+│   │   │   ├── ui/         # User-facing behavior, any language
+│   │   │   ├── testing/    # unit/ and spec/
+│   │   │   └── cross-cutting/ # Language-independent code rules
+│   │   ├── practices/      # Rules on how work happens (process, coordination)
+│   │   ├── knowledge-sharing/ # Domain and product facts, no rules
+│   │   └── others/         # Nothing above fits
 │   └── synthesis/          # comparisons, analyses, cross-cutting themes
 ├── output/                 # Reports, query results, and generated artifacts go here
 ```
@@ -54,7 +49,7 @@ Filenames use **kebab-case** with `.md` extension. Page titles inside the file u
 
 - Source pages: `wiki/sources/article-title-here.md` → `# Article Title Here`
 - Entity pages: `wiki/entities/entity-name.md` → `# Entity Name`
-- Concept pages: `wiki/concepts/concept-name.md` → `# Concept Name`
+- Concept pages: `wiki/concepts/<category>/concept-name.md` → `# Concept Name` (category = `standards/{csharp,typescript,sql,ui,testing/unit,cross-cutting}`, `practices`, `knowledge-sharing`, or `others`)
 - Synthesis pages: `wiki/synthesis/comparison-topic.md` → `# Comparison Topic`
 
 When creating `[[wikilinks]]`, use the filename (kebab-case), not the page title (Title Case):
