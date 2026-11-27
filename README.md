@@ -24,11 +24,11 @@ The LLM is the librarian. You're the curator.
 3. **Pull comments** into `raw/` — see [Pulling Comments](#pulling-comments) below
 4. **Run the skill** — agent follows its steps automatically
 
-| Step | Slash command | What it does |
-|---|---|---|
-| Ingest a source | `/ingest` | Reads `raw/`, writes wiki pages, updates index |
-| Ask a question | `/query` | Searches wiki, answers from structured pages |
-| Health-check | `/lint` | Finds broken links, orphan pages, stale claims |
+   | Step | Slash command | What it does |
+   |---|---|---|
+   | Ingest a source | `/ingest` | Reads `raw/`, writes wiki pages, updates index |
+   | Ask a question | `/query` | Searches wiki, answers from structured pages |
+   | Health-check | `/lint` | Finds broken links, orphan pages, stale claims |
 
 **Browse results** in Obsidian — follow `[[wikilinks]]`, explore graph view, check `wiki/index.md`
 
