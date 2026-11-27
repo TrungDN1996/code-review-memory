@@ -53,11 +53,27 @@ else
   echo "wiki/log.md already exists, skipping" >&2
 fi
 
-# 4. Check tooling
+# 4. Install markitdown (optional; failure must not abort setup)
+if ! command -v markitdown &> /dev/null; then
+  echo "" >&2
+  echo "Installing markitdown..." >&2
+  if command -v uv &> /dev/null; then
+    uv tool install 'markitdown[all]' >&2 || echo "  markitdown install failed" >&2
+  elif command -v pipx &> /dev/null; then
+    pipx install 'markitdown[all]' >&2 || echo "  markitdown install failed" >&2
+  elif command -v pip3 &> /dev/null; then
+    pip3 install --user 'markitdown[all]' >&2 || echo "  markitdown install failed" >&2
+  else
+    echo "  no uv/pipx/pip3 found, skipping markitdown install" >&2
+  fi
+fi
+
+# 5. Check tooling
 echo "" >&2
 echo "Checking tooling..." >&2
 
 TOOLS_JSON="[]"
+PYTHON=$(command -v python3 || command -v python || echo python3)
 
 check_tool() {
   local name="$1"
@@ -72,7 +88,7 @@ check_tool() {
     echo "  [missing] $name — install with: $install_cmd" >&2
   fi
 
-  TOOLS_JSON=$(echo "$TOOLS_JSON" | python3 -c "
+  TOOLS_JSON=$(echo "$TOOLS_JSON" | "$PYTHON" -c "
 import sys, json
 tools = json.load(sys.stdin)
 tools.append({'name': '$name', 'status': '$status', 'install': '$install_cmd'})
@@ -80,12 +96,13 @@ print(json.dumps(tools))
 " 2>/dev/null || echo "$TOOLS_JSON")
 }
 
+check_tool "markitdown" "markitdown" "uv tool install markitdown[all]"
 check_tool "qmd" "qmd" "npm i -g @tobilu/qmd"
 
 echo "" >&2
 echo "Setup complete." >&2
 
-# 5. Output JSON result to stdout
+# 6. Output JSON result to stdout
 VAULT_ABS=$(cd "$VAULT_ROOT" && pwd)
 cat << JSONEOF
 {

@@ -9,6 +9,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 ONBOARDING="$REPO_ROOT/scripts/setup.sh"
 TEST_DIR=$(mktemp -d)
 TEST_VAULT="$TEST_DIR/test-vault"
+PYTHON=$(command -v python3 || command -v python || echo python3)
 
 cleanup() {
   rm -rf "$TEST_DIR"
@@ -93,11 +94,56 @@ echo ""
 # Test 5: Script outputs valid JSON
 echo "Test 5: JSON output"
 OUTPUT=$(bash "$ONBOARDING" "$TEST_VAULT" 2>/dev/null)
-if echo "$OUTPUT" | python3 -m json.tool > /dev/null 2>&1; then
+if echo "$OUTPUT" | "$PYTHON" -m json.tool > /dev/null 2>&1; then
   echo "  PASS: output is valid JSON"
   PASS=$((PASS + 1))
 else
   echo "  FAIL: output is not valid JSON"
+  FAIL=$((FAIL + 1))
+fi
+
+echo ""
+
+# Test 6: markitdown not installed + vault folder does not exist
+echo "Test 6: Missing markitdown, missing vault folder"
+STUB_BIN="$TEST_DIR/stub-bin"
+UV_LOG="$TEST_DIR/uv.log"
+NEW_VAULT="$TEST_DIR/new/nested/vault"
+mkdir -p "$STUB_BIN"
+cat > "$STUB_BIN/uv" << EOF
+#!/bin/bash
+echo "\$@" >> "$UV_LOG"
+EOF
+chmod +x "$STUB_BIN/uv"
+
+# Drop PATH entries holding a real markitdown so it looks uninstalled
+CLEAN_PATH="$STUB_BIN"
+IFS=':' read -ra PATH_DIRS <<< "$PATH"
+for d in "${PATH_DIRS[@]}"; do
+  if [ ! -x "$d/markitdown" ] && [ ! -x "$d/markitdown.exe" ]; then
+    CLEAN_PATH="$CLEAN_PATH:$d"
+  fi
+done
+
+if OUTPUT=$(PATH="$CLEAN_PATH" bash "$ONBOARDING" "$NEW_VAULT" 2>/dev/null); then
+  echo "  PASS: script exits 0"
+  PASS=$((PASS + 1))
+else
+  echo "  FAIL: script exited non-zero"
+  FAIL=$((FAIL + 1))
+fi
+assert_dir "$NEW_VAULT/raw"
+assert_file "$NEW_VAULT/wiki/index.md"
+assert_contains "$UV_LOG" "tool install markitdown\[all\]"
+if echo "$OUTPUT" | "$PYTHON" -c "
+import sys, json
+tools = {t['name']: t['status'] for t in json.load(sys.stdin)['tools']}
+sys.exit(0 if tools.get('markitdown') == 'missing' else 1)
+" 2>/dev/null; then
+  echo "  PASS: JSON reports markitdown missing"
+  PASS=$((PASS + 1))
+else
+  echo "  FAIL: JSON does not report markitdown missing"
   FAIL=$((FAIL + 1))
 fi
 

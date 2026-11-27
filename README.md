@@ -12,6 +12,7 @@ The LLM is the librarian. You're the curator.
 
 - **[Obsidian](https://obsidian.md)** — the markdown editor you'll browse your wiki in
 - **An AI coding agent** — [Claude Code](https://claude.ai/code)
+- **[uv](https://docs.astral.sh/uv/)** — Python package manager
 
 ## Quick Start
 
