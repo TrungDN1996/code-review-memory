@@ -50,7 +50,7 @@ Cross-reference source dates with wiki content. Flag when:
 - A concept page cites only old sources and newer sources exist on the same topic
 - Entity information hasn't been updated despite newer sources mentioning that entity
 - A source page is over about 2 years old by its version/date info, yet has `confidence` above `low` or no `**Staleness:**` line. Fix: set `confidence: low` and add `**Staleness:** source dated ~YYYY; verify tooling and claims are still current.`
-- A concept page built mainly from a stale source has no `**Staleness:**` line. Fix: add the line. Never add a `confidence` field to a concept, entity, or synthesis page — `confidence` is source-pages-only.
+- A non-source page (concept, entity, synthesis) has a `**Staleness:**` line or a `confidence` field. Fix: remove it — both are source-pages-only.
 
 ### 5. Missing pages
 

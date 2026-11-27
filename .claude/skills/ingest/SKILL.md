@@ -100,7 +100,7 @@ Create a new file in `wiki/sources/` named after the source (slugified). Include
 
 **Old sources:** find the source's version or date (document metadata, "last updated" line, pinned tool versions such as Node/Leaflet/API releases). If it is over about 2 years old, or no date exists and tool versions point to that age, set `confidence: low` on the source page and add a line under `## Summary`: `**Staleness:** source dated ~YYYY; verify tooling and claims are still current.`
 
-`confidence` is a source-page-only frontmatter field. Entity, concept, and synthesis pages never get a `confidence` field — add the same `**Staleness:**` line (in body text, not frontmatter) to every concept page built mainly from that source instead.
+`confidence` and `**Staleness:**` are source-page-only. Entity, concept, and synthesis pages never get a `confidence` field or a `**Staleness:**` line.
 
 ### 4. Update entity and concept pages
 
