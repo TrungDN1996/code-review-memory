@@ -104,3 +104,20 @@ The wizard offers to install these. All optional but recommended:
 - **[markitdown](https://github.com/microsoft/markitdown)** — convert non-markdown files to markdown before ingestion
 - **[summarize](https://github.com/steipete/summarize)** — summarize links, files, and media from the CLI
 - **[qmd](https://github.com/tobi/qmd)** — local search engine for markdown files (useful as wiki grows)
+
+## Troubleshooting
+
+### Windows: `setup.sh` reports `uv`/`markitdown` missing
+
+**Symptom:** `bash scripts/setup.sh` prints `'uv' not found; install it first` or `[missing] markitdown`, although `uv` is installed.
+
+**Cause:** `bash` resolves to the WSL launcher (`C:\Users\<you>\AppData\Local\Microsoft\WindowsApps\bash.exe`), not Git Bash. WSL has its own filesystem and PATH, so it cannot see Windows `uv.exe` or `npm`. Check with `where bash` in cmd.
+
+**Fix (make Git Bash the default `bash`):**
+1. Open **Edit environment variables for your account**.
+2. Select **Path** under User variables, then **Edit**.
+3. Move `C:\Program Files\Git\usr\bin` above `C:\Users\<you>\AppData\Local\Microsoft\WindowsApps`. Add it if missing.
+4. Restart VS Code and all terminals.
+5. Verify: `where bash` lists Git's `bash.exe` first.
+
+Alternatives: disable the `bash.exe` alias under Settings → Apps → Advanced app settings → App execution aliases, or run `"C:\Program Files\Git\bin\bash.exe" scripts/setup.sh`.

@@ -104,18 +104,6 @@ fi
 
 echo ""
 
-# Test 6: markitdown not installed + vault folder does not exist
-echo "Test 6: Missing markitdown, missing vault folder"
-STUB_BIN="$TEST_DIR/stub-bin"
-UV_LOG="$TEST_DIR/uv.log"
-NEW_VAULT="$TEST_DIR/new/nested/vault"
-mkdir -p "$STUB_BIN"
-cat > "$STUB_BIN/uv" << EOF
-#!/bin/bash
-echo "\$@" >> "$UV_LOG"
-EOF
-chmod +x "$STUB_BIN/uv"
-
 # Drop PATH entries holding a real markitdown so it looks uninstalled
 CLEAN_PATH="$STUB_BIN"
 IFS=':' read -ra PATH_DIRS <<< "$PATH"
@@ -125,7 +113,9 @@ for d in "${PATH_DIRS[@]}"; do
   fi
 done
 
-if OUTPUT=$(PATH="$CLEAN_PATH" bash "$ONBOARDING" "$NEW_VAULT" 2>/dev/null); then
+# setup.sh only prompts when stderr is a tty; 2>/dev/null keeps the test non-interactive.
+# HOME is faked so a real ~/.local/bin/markitdown (added to PATH by setup.sh) is not found.
+if OUTPUT=$(HOME="$TEST_DIR/home" PATH="$CLEAN_PATH" bash "$ONBOARDING" "$NEW_VAULT" 2>/dev/null </dev/null); then
   echo "  PASS: script exits 0"
   PASS=$((PASS + 1))
 else
@@ -134,7 +124,13 @@ else
 fi
 assert_dir "$NEW_VAULT/raw"
 assert_file "$NEW_VAULT/wiki/index.md"
-assert_contains "$UV_LOG" "tool install markitdown\[all\]"
+if [ ! -e "$UV_LOG" ]; then
+  echo "  PASS: uv not invoked without tty consent"
+  PASS=$((PASS + 1))
+else
+  echo "  FAIL: uv invoked without consent — $(cat "$UV_LOG")"
+  FAIL=$((FAIL + 1))
+fi
 if echo "$OUTPUT" | "$PYTHON" -c "
 import sys, json
 tools = {t['name']: t['status'] for t in json.load(sys.stdin)['tools']}

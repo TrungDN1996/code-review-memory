@@ -53,27 +53,13 @@ else
   echo "wiki/log.md already exists, skipping" >&2
 fi
 
-# 4. Install markitdown (optional; failure must not abort setup)
-if ! command -v markitdown &> /dev/null; then
-  echo "" >&2
-  echo "Installing markitdown..." >&2
-  if command -v uv &> /dev/null; then
-    uv tool install 'markitdown[all]' >&2 || echo "  markitdown install failed" >&2
-  elif command -v pipx &> /dev/null; then
-    pipx install 'markitdown[all]' >&2 || echo "  markitdown install failed" >&2
-  elif command -v pip3 &> /dev/null; then
-    pip3 install --user 'markitdown[all]' >&2 || echo "  markitdown install failed" >&2
-  else
-    echo "  no uv/pipx/pip3 found, skipping markitdown install" >&2
-  fi
-fi
-
-# 5. Check tooling
+# 4. Check tooling
 echo "" >&2
 echo "Checking tooling..." >&2
 
 TOOLS_JSON="[]"
-PYTHON=$(command -v python3 || command -v python || echo python3)
+# uv tool installs here; often missing from PATH in non-login shells
+export PATH="$HOME/.local/bin:$PATH"
 
 check_tool() {
   local name="$1"
@@ -85,15 +71,32 @@ check_tool() {
     status="installed"
     echo "  [ok] $name" >&2
   else
-    echo "  [missing] $name — install with: $install_cmd" >&2
+    echo "  [missing] $name" >&2
+    # prompt via /dev/tty (stdout is JSON); no tty (CI/agent) = skip install
+    local reply="" installer="${install_cmd%% *}"
+    if ! command -v "$installer" &> /dev/null; then
+      echo "  '$installer' not found; install it first" >&2
+    elif [ -t 2 ] && [ -r /dev/tty ]; then
+      # read -p writes its prompt to stderr, so print it ourselves
+      printf "  Install %s with '%s'? [y/N] " "$name" "$install_cmd" >&2
+      { read -r reply < /dev/tty; } 2>/dev/null || reply=""
+    fi
+    if [[ "$reply" =~ ^[Yy]([Ee][Ss])?$ ]]; then
+      # install output to stderr so stdout stays pure JSON
+      if eval "$install_cmd" >&2 && command -v "$cmd" &> /dev/null; then
+        status="installed"
+        echo "  [ok] $name (installed)" >&2
+      else
+        echo "  [failed] $name — install manually: $install_cmd" >&2
+      fi
+    else
+      echo "  [skipped] install manually: $install_cmd" >&2
+    fi
   fi
 
-  TOOLS_JSON=$(echo "$TOOLS_JSON" | "$PYTHON" -c "
-import sys, json
-tools = json.load(sys.stdin)
-tools.append({'name': '$name', 'status': '$status', 'install': '$install_cmd'})
-print(json.dumps(tools))
-" 2>/dev/null || echo "$TOOLS_JSON")
+  # install cmds contain no quotes/backslashes, so no JSON escaping needed
+  local entry="{\"name\": \"$name\", \"status\": \"$status\", \"install\": \"$install_cmd\"}"
+  if [ "$TOOLS_JSON" = "[]" ]; then TOOLS_JSON="[$entry]"; else TOOLS_JSON="${TOOLS_JSON%]}, $entry]"; fi
 }
 
 check_tool "markitdown" "markitdown" "uv tool install markitdown[all]"
@@ -102,7 +105,7 @@ check_tool "qmd" "qmd" "npm i -g @tobilu/qmd"
 echo "" >&2
 echo "Setup complete." >&2
 
-# 6. Output JSON result to stdout
+# 5. Output JSON result to stdout
 VAULT_ABS=$(cd "$VAULT_ROOT" && pwd)
 cat << JSONEOF
 {
