@@ -62,6 +62,7 @@ Create a new file in `wiki/sources/` named after the source (slugified). Include
     ---
     title: Page Title
     type: concept | entity | source-summary | synthesis
+    tags: [topic-tag, ...]
     sources:
       - raw/papers/filename.md
     related:
@@ -97,9 +98,15 @@ Create a new file in `wiki/sources/` named after the source (slugified). Include
     - [[Concept Name]] — brief context
     - ...
 
+**Old sources:** find the source's version or date (document metadata, "last updated" line, pinned tool versions such as Node/Leaflet/API releases). If it is over about 2 years old, or no date exists and tool versions point to that age, set `confidence: low` on the source page and add a line under `## Summary`: `**Staleness:** source dated ~YYYY; verify tooling and claims are still current.`
+
+`confidence` is a source-page-only frontmatter field. Entity, concept, and synthesis pages never get a `confidence` field — add the same `**Staleness:**` line (in body text, not frontmatter) to every concept page built mainly from that source instead.
+
 ### 4. Update entity and concept pages
 
 For each entity (person, organization, product, tool) and concept (idea, framework, theory, pattern) mentioned in the source:
+
+**Split mixed-topic sources:** one concept page per distinct rule set. A source that carries several rule sets (e.g. a README with ngrx, folder layout and testing rules) produces several concept pages, each placed by the Concept Placement Rule in **Placement rule** below. Do not bundle rule sets into one page, and do not let a page's scope blur across directory axes.
 
 **If a wiki page already exists:**
 - Read the existing page

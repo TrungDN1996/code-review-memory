@@ -20,6 +20,8 @@ Based on [Andrej Karpathy's LLM Wiki pattern](llm-wiki.md).
 │   │   │   ├── sql/        # SQL rules
 │   │   │   ├── ui/         # User-facing behavior, any language
 │   │   │   ├── testing/    # unit/ and spec/
+│   │   │   │   ├── unit/   # Backend test rules (C#/SQL)
+│   │   │   │   └── spec/   # UI test rules
 │   │   │   └── cross-cutting/ # Language-independent code rules
 │   │   ├── practices/      # Rules on how work happens (process, coordination)
 │   │   ├── knowledge-sharing/ # Domain and product facts, no rules
@@ -43,13 +45,15 @@ Each entry in `wiki/log.md`:
     ## [YYYY-MM-DD] operation | Title
     Brief description of what was done.
 
+Operations: `ingest`, `lint`, `prune` (delete a page), `move` (change directory), `rename` (change slug), `rewrite` (substantially change a page's content).
+
 ## Page Naming
 
 Filenames use **kebab-case** with `.md` extension. Page titles inside the file use **Title Case**.
 
 - Source pages: `wiki/sources/article-title-here.md` → `# Article Title Here`
 - Entity pages: `wiki/entities/entity-name.md` → `# Entity Name`
-- Concept pages: `wiki/concepts/<category>/concept-name.md` → `# Concept Name` (category = `standards/{csharp,typescript,sql,ui,testing/unit,cross-cutting}`, `practices`, `knowledge-sharing`, or `others`)
+- Concept pages: `wiki/concepts/<category>/concept-name.md` → `# Concept Name` (category = `standards/{csharp,typescript,sql,ui,testing/unit,testing/spec,cross-cutting}`, `practices`, `knowledge-sharing`, or `others`)
 - Synthesis pages: `wiki/synthesis/comparison-topic.md` → `# Comparison Topic`
 
 When creating `[[wikilinks]]`, use the filename (kebab-case), not the page title (Title Case):
@@ -77,3 +81,4 @@ Run a lint pass (`/lint`) on this schedule:
 8. When asked a question, search the wiki first. Only go to raw sources if the wiki doesn't have the answer.
 9. Prefer updating existing pages over creating new ones. Only create a new page when the topic is distinct enough to warrant it.
 10. Keep `wiki/index.md` concise — one line per page, under 120 characters per entry.
+11. Before deleting, moving, or renaming a page, grep `wiki/` for inbound `[[slug]]` links. Delete or repoint every one (except old `log.md` entries), update `index.md`, remove directories left empty, and log the operation. After the change, grep again to confirm no stale links remain.

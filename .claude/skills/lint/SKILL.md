@@ -49,6 +49,8 @@ For each contradiction, cite both pages (file + line) and both sources — when 
 Cross-reference source dates with wiki content. Flag when:
 - A concept page cites only old sources and newer sources exist on the same topic
 - Entity information hasn't been updated despite newer sources mentioning that entity
+- A source page is over about 2 years old by its version/date info, yet has `confidence` above `low` or no `**Staleness:**` line. Fix: set `confidence: low` and add `**Staleness:** source dated ~YYYY; verify tooling and claims are still current.`
+- A concept page built mainly from a stale source has no `**Staleness:**` line. Fix: add the line. Never add a `confidence` field to a concept, entity, or synthesis page — `confidence` is source-pages-only.
 
 ### 5. Missing pages
 
@@ -105,6 +107,7 @@ Verify each page sits in the directory its content calls for — one axis per le
 - A test rule sits outside `standards/testing/unit|spec/`, or a user-facing-behavior rule sits outside `standards/ui/`
 - A page sits in `others/` though one of the categories above now fits
 - Interpretation or synthesis lives on a `sources/` page (rule 7), or a page mixes two axes and should be split
+- A concept page bundles more than one distinct rule set (violates "one concept page per distinct rule set" in `/ingest`), e.g. store, layout and test rules on one page. Fix: split into one page per rule set, each placed by its own axis, repoint inbound links, log as `rewrite`
 - A page is tagged with its own path segment (e.g. `standards` tag inside `standards/`)
 
 Fix by moving the file, updating `wiki/index.md` (entry and category header), and repointing inbound `[[wikilinks]]` if the slug changes. Log the move.
